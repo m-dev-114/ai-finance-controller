@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from ..database import get_db
-from ..models import ReconciliationRun, ExceptionRecord
+from ..models import ReconciliationRun, ExceptionRecord, Transaction
 from ..schemas import MetricsOut, TrendOut, TrendPoint
 
 router = APIRouter(prefix="/metrics", tags=["metrics"])
@@ -52,6 +52,7 @@ def get_metrics(db: Session = Depends(get_db)):
             "batch": rate(l2_m, l2_e),
             "ledger": rate(l3_m, l3_e),
         },
+        total_transactions_in_dataset=db.query(Transaction).count(),
     )
 
 

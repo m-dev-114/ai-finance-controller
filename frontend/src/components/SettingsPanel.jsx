@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { api } from '../api'
 
-export default function SettingsPanel({ onChanged }) {
+export default function SettingsPanel({ onChanged, dataVersion }) {
   const [open, setOpen] = useState(false)
   const [current, setCurrent] = useState(null)
   const [draft, setDraft] = useState(0.9)
@@ -22,9 +22,16 @@ export default function SettingsPanel({ onChanged }) {
     api.simulateThreshold(value).then(setSimulation).catch(() => setSimulation(null))
   }, [])
 
+  // Re-runs whenever the panel opens, the slider moves, OR the underlying
+  // dataset changes elsewhere (a reseed, an import, a fresh reconciliation
+  // run) while this panel happens to be left open — otherwise it would keep
+  // showing simulation numbers computed against data that no longer exists.
   useEffect(() => {
-    if (open) runSimulation(draft)
-  }, [draft, open, runSimulation])
+    if (open) {
+      setSaveResult(null)
+      runSimulation(draft)
+    }
+  }, [draft, open, dataVersion, runSimulation])
 
   async function handleSave() {
     setSaving(true)

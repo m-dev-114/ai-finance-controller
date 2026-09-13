@@ -19,6 +19,7 @@ export default function App() {
   const [running, setRunning] = useState(false)
   const [error, setError] = useState(null)
   const [loaded, setLoaded] = useState(false)
+  const [dataVersion, setDataVersion] = useState(0)
 
   const refresh = useCallback(async () => {
     try {
@@ -31,6 +32,7 @@ export default function App() {
       setMetrics(metricsData)
       setRuns(runsData)
       setError(null)
+      setDataVersion((v) => v + 1)
     } catch (e) {
       setError(e.message)
     } finally {
@@ -94,13 +96,14 @@ export default function App() {
         seeding={seeding}
         running={running}
         lastRun={lastRun}
+        datasetSize={metrics?.total_transactions_in_dataset}
       />
 
       <main style={{ padding: '0 40px 60px' }}>
         <MetricsStrip metrics={metrics} />
 
         <div style={{ maxWidth: 1180, margin: '20px auto 0', display: 'flex', gap: 10, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-          <SettingsPanel onChanged={refresh} />
+          <SettingsPanel onChanged={refresh} dataVersion={dataVersion} />
           <ImportPanel onImported={refresh} />
         </div>
 

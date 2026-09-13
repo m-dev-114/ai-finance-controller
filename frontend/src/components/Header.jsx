@@ -1,4 +1,4 @@
-export default function Header({ onSeed, onRun, seeding, running, lastRun }) {
+export default function Header({ onSeed, onRun, seeding, running, lastRun, datasetSize }) {
   return (
     <header style={{
       borderBottom: '1px solid var(--line)',
@@ -18,6 +18,11 @@ export default function Header({ onSeed, onRun, seeding, running, lastRun }) {
           </h1>
           <p style={{ margin: '6px 0 0', color: 'var(--muted)', fontSize: 14.5 }}>
             Multi-level payment reconciliation — transactions, settlement batches, and the ledger.
+            {typeof datasetSize === 'number' && (
+              <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink)' }}>
+                {' '}Checking {datasetSize.toLocaleString('en-IN')} transaction{datasetSize === 1 ? '' : 's'}.
+              </span>
+            )}
           </p>
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>

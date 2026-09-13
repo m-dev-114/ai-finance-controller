@@ -71,6 +71,7 @@ class MetricsOut(BaseModel):
     avg_resolution_minutes: Optional[float]
     exceptions_by_status: dict
     match_rate_by_level: dict
+    total_transactions_in_dataset: int = 0
 
 
 class ThresholdOut(BaseModel):
