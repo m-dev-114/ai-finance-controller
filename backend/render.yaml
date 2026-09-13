@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: ai-finance-controller-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        sync: false          # set to your Supabase Postgres connection string
+      - key: GROQ_API_KEY
+        sync: false          # optional — leave unset to use the rule-based explainer
+      - key: OPENAI_API_KEY
+        sync: false          # optional alternative to Groq
+      - key: AUTO_CLEAR_CONFIDENCE
+        value: "0.9"
+      - key: CORS_ORIGINS
+        sync: false          # set to your deployed Vercel URL, e.g. https://your-app.vercel.app
+      - key: RECONCILE_API_KEY
+        sync: false          # optional — set to require X-Api-Key on mutating endpoints
+      - key: SLACK_WEBHOOK_URL
+        sync: false          # optional — Slack incoming webhook for run notifications
+
+  # Recommended way to run reconciliation on a schedule in production.
+  # A free-tier web service sleeps on idle, so an in-process scheduler
+  # (ENABLE_SCHEDULER=true on the web service above) isn't reliable there —
+  # a real cron job that wakes the service up and calls /reconcile/run is.
+  - type: cron
+    name: ai-finance-controller-nightly-reconcile
+    runtime: docker
+    schedule: "0 2 * * *"   # 2am UTC daily — adjust to taste
+    dockerCommand: >
+      sh -c "curl -sf -X POST https://YOUR-BACKEND-URL.onrender.com/reconcile/run
+      -H 'X-Api-Key: $RECONCILE_API_KEY'"
+    envVars:
+      - key: RECONCILE_API_KEY
+        sync: false          # must match the web service's RECONCILE_API_KEY

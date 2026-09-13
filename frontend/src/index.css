@@ -1,0 +1,51 @@
+:root {
+  /* Color: deep green-black ink on paper white, ledger-green accent for
+     matched/cleared, rust-amber for attention. Deliberately not the
+     cream+terracotta or dark+neon defaults. */
+  --ink: #14201c;
+  --paper: #ffffff;
+  --paper-dim: #f2f4f1;
+  --line: #dadfd8;
+  --line-strong: #b9c2ba;
+  --muted: #66756c;
+
+  --accent: #1f6f5c;
+  --accent-soft: #e4efea;
+  --warn: #a8501c;
+  --warn-soft: #f7e9de;
+  --bad: #9c2b2b;
+  --bad-soft: #f5e1de;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper-dim);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+button:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--accent-soft);
+}
